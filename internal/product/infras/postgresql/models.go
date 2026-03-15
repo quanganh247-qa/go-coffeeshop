@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type Product struct {
+type ProductProduct struct {
 	ID        uuid.UUID    `json:"id"`
 	Name      string       `json:"name"`
 	Type      int32        `json:"type"`

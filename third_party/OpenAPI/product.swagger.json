@@ -31,7 +31,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -55,7 +55,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -71,24 +71,46 @@
           "ItemTypes"
         ]
       }
+    },
+    "/v1/api/items/{id}": {
+      "get": {
+        "summary": "Get item detail",
+        "description": "Get item detail by id.",
+        "operationId": "ProductService_GetItemDetail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/productapiGetItemDetailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Items"
+        ]
+      }
     }
   },
   "definitions": {
-    "googlerpcStatus": {
+    "productapiGetItemDetailResponse": {
       "type": "object",
       "properties": {
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "message": {
-          "type": "string"
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/protobufAny"
-          }
+        "item": {
+          "$ref": "#/definitions/productapiItemTypeDto"
         }
       }
     },
@@ -98,6 +120,7 @@
         "itemTypes": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/productapiItemTypeDto"
           }
         }
@@ -109,6 +132,7 @@
         "items": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/productapiItemDto"
           }
         }
@@ -143,6 +167,12 @@
         },
         "image": {
           "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
         }
       }
     },
@@ -154,6 +184,25 @@
         }
       },
       "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
     }
   }
 }

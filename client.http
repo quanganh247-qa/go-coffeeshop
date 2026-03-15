@@ -1,4 +1,4 @@
-@host = http://localhost:5000
+@host = http://localhost:8000
 
 ###
 GET {{host}}/v1/api/item-types HTTP/1.1

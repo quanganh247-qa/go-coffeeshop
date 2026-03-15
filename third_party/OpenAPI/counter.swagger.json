@@ -31,7 +31,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -65,7 +65,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -91,6 +91,7 @@
         "orders": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/counterapiOrderDto"
           }
         }
@@ -146,6 +147,7 @@
         "lineItems": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/counterapiLineItemDto"
           }
         }
@@ -172,12 +174,14 @@
         "baristaItems": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/counterapiCommandItem"
           }
         },
         "kitchenItems": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/counterapiCommandItem"
           }
         },
@@ -190,7 +194,16 @@
     "counterapiPlaceOrderResponse": {
       "type": "object"
     },
-    "googlerpcStatus": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
       "type": "object",
       "properties": {
         "code": {
@@ -203,19 +216,11 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }
       }
-    },
-    "protobufAny": {
-      "type": "object",
-      "properties": {
-        "@type": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": {}
     }
   }
 }

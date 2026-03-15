@@ -83,3 +83,26 @@ func (g *productGRPCServer) GetItemsByType(
 
 	return &res, nil
 }
+
+func (g *productGRPCServer) GetItemDetail(ctx context.Context, request *gen.GetItemDetailRequest) (*gen.GetItemDetailResponse, error) {
+	slog.Info("gRPC client", "http_method", "GET", "http_name", "GetItemDetail", "id", request.Id)
+
+	res := gen.GetItemDetailResponse{}
+
+	result, err := g.uc.GetItemDetails(ctx, request.Id)
+	if err != nil {
+		return nil, errors.Wrap(err, "productGRPCServer-GetItemDetail")
+	}
+
+	res.Item = &gen.ItemTypeDto{
+		Name:      result.Name,
+		Type:      int32(result.Type),
+		Price:     result.Price,
+		CreatedAt: result.CreatedAt,
+		UpdatedAt: result.UpdatedAt,
+		// Image: result.Image,
+
+	}
+
+	return &res, nil
+}

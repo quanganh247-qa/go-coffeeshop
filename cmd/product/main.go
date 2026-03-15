@@ -12,6 +12,7 @@ import (
 	"github.com/thangchung/go-coffeeshop/cmd/product/config"
 	"github.com/thangchung/go-coffeeshop/internal/product/app"
 	"github.com/thangchung/go-coffeeshop/pkg/logger"
+	"github.com/thangchung/go-coffeeshop/pkg/postgres"
 	"go.uber.org/automaxprocs/maxprocs"
 	"golang.org/x/exp/slog"
 	"google.golang.org/grpc"
@@ -48,11 +49,18 @@ func main() {
 		<-ctx.Done()
 	}()
 
-	_, err = app.InitApp(cfg, server)
+	dbURL := os.Getenv("PG_URL")
+	if dbURL == "" {
+		slog.Error("failed to get PG_URL from env", nil)
+		cancel()
+	}
+
+	_, cleanup, err := app.InitApp(cfg, postgres.DBConnString(dbURL), server)
 	if err != nil {
 		slog.Error("failed init app", err)
 		cancel()
 	}
+	defer cleanup()
 
 	// gRPC Server.
 	address := fmt.Sprintf("%s:%d", cfg.HTTP.Host, cfg.HTTP.Port)
@@ -83,8 +91,10 @@ func main() {
 
 	select {
 	case v := <-quit:
+		cleanup()
 		slog.Info("signal.Notify", v)
 	case done := <-ctx.Done():
+		cleanup()
 		slog.Info("ctx.Done", done)
 	}
 }

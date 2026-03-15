@@ -9,4 +9,5 @@ import (
 type UseCase interface {
 	GetItemTypes(context.Context) ([]*domain.ItemTypeDto, error)
 	GetItemsByType(context.Context, string) ([]*domain.ItemDto, error)
+	GetItemDetails(context.Context, string) (*domain.ItemDto, error)
 }
