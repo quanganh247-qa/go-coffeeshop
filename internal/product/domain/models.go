@@ -8,6 +8,9 @@ type ItemTypeDto struct {
 }
 
 type ItemDto struct {
-	Price float64 `json:"price"`
-	Type  int     `json:"type"`
+	Name      string  `json:"name"`
+	Price     float64 `json:"price"`
+	Type      int     `json:"type"`
+	CreatedAt string  `json:"created_at"`
+	UpdatedAt string  `json:"updated_at"`
 }

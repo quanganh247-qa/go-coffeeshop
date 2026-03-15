@@ -42,3 +42,12 @@ func (s *service) GetItemsByType(ctx context.Context, itemTypes string) ([]*doma
 
 	return results, nil
 }
+
+func (s *service) GetItemDetails(ctx context.Context, id string) (*domain.ItemDto, error) {
+	result, err := s.repo.GetProductByID(ctx, id)
+	if err != nil {
+		return nil, errors.Wrap(err, "service.GetItemDetails")
+	}
+
+	return result, nil
+}

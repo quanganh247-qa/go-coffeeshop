@@ -30,6 +30,25 @@ service ProductService {
       tags: "ItemTypes"
     };
   }
+
+  rpc GetItemDetail(GetItemDetailRequest) returns (GetItemDetailResponse) {
+    option (google.api.http) = {
+      get: "/v1/api/items/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get item detail"
+      description: "Get item detail by id."
+      tags: "Items"
+    };
+  }
+}
+
+message GetItemDetailRequest {
+  string id = 1;
+}
+
+message GetItemDetailResponse {
+  ItemTypeDto item = 1;
 }
 
 message GetItemTypesRequest {}
@@ -54,4 +73,6 @@ message ItemTypeDto {
   int32 type = 2;
   double price = 3;
   string image = 4;
+  string created_at = 5;
+  string updated_at = 6;
 }

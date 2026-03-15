@@ -4,7 +4,7 @@ app:
 
 http:
   host: '0.0.0.0'
-  port: 5002
+  port: 8002
 
 postgres:
   pool_max: 2
@@ -14,7 +14,7 @@ rabbitmq:
   url: amqp://guest:guest@127.0.0.1:5672/
 
 product_client:
-  url: 0.0.0.0:5001
+  url: 0.0.0.0:8001
 
 logger:
   log_level: 'debug'

@@ -15,6 +15,7 @@ import (
 	"github.com/thangchung/go-coffeeshop/internal/counter/infras/postgresql"
 	"github.com/thangchung/go-coffeeshop/internal/counter/usecases/orders"
 	shared "github.com/thangchung/go-coffeeshop/internal/pkg/shared_kernel"
+	sharedkernel "github.com/thangchung/go-coffeeshop/internal/pkg/shared_kernel"
 	"github.com/thangchung/go-coffeeshop/pkg/postgres"
 )
 
@@ -52,19 +53,32 @@ func (d *orderRepo) GetAll(ctx context.Context) ([]*domain.Order, error) {
 		}
 	})
 	lineItems := lo.Map(results, func(x postgresql.GetAllRow, _ int) *domain.LineItem {
-		priceX, err := strconv.ParseFloat(x.Price, 32)
-		if err != nil {
-			return nil
+		var price float64
+		if x.Price.Valid {
+			price, _ = strconv.ParseFloat(x.Price.String, 64)
 		}
-		price := float32(priceX)
+		var itemType sharedkernel.ItemType
+		if x.ItemType.Valid {
+			itemType = sharedkernel.ItemType(x.ItemType.Int32)
+		}
+
+		var itemStatus sharedkernel.Status
+		if x.ItemStatus.Valid {
+			itemStatus = sharedkernel.Status(x.ItemStatus.Int32)
+		}
+
+		var name string
+		if x.Name.Valid {
+			name = x.Name.String
+		}
 
 		return &domain.LineItem{
 			ID:             x.LineItemID.UUID,
-			ItemType:       shared.ItemType(x.ItemType),
-			Name:           x.Name,
-			Price:          price,
-			ItemStatus:     shared.Status(x.ItemStatus),
-			IsBaristaOrder: x.IsBaristaOrder,
+			ItemType:       itemType,
+			Name:           name,
+			Price:          float32(price),
+			ItemStatus:     itemStatus,
+			IsBaristaOrder: x.IsBaristaOrder.Valid && x.IsBaristaOrder.Bool,
 			OrderID:        x.ID,
 		}
 	})
@@ -121,19 +135,32 @@ func (d *orderRepo) GetByID(ctx context.Context, id uuid.UUID) (*domain.Order, e
 		}
 	})
 	lineItems := lo.Map(results, func(x postgresql.GetByIDRow, _ int) *domain.LineItem {
-		priceX, err := strconv.ParseFloat(x.Price, 32)
-		if err != nil {
-			return nil
+		var price float64
+		if x.Price.Valid {
+			price, _ = strconv.ParseFloat(x.Price.String, 64)
 		}
-		price := float32(priceX)
+		var itemType sharedkernel.ItemType
+		if x.ItemType.Valid {
+			itemType = sharedkernel.ItemType(x.ItemType.Int32)
+		}
+
+		var itemStatus sharedkernel.Status
+		if x.ItemStatus.Valid {
+			itemStatus = sharedkernel.Status(x.ItemStatus.Int32)
+		}
+
+		var name string
+		if x.Name.Valid {
+			name = x.Name.String
+		}
 
 		return &domain.LineItem{
 			ID:             x.LineItemID.UUID,
-			ItemType:       shared.ItemType(x.ItemType),
-			Name:           x.Name,
-			Price:          price,
-			ItemStatus:     shared.Status(x.ItemStatus),
-			IsBaristaOrder: x.IsBaristaOrder,
+			ItemType:       itemType,
+			Name:           name,
+			Price:          float32(price),
+			ItemStatus:     itemStatus,
+			IsBaristaOrder: x.IsBaristaOrder.Valid && x.IsBaristaOrder.Bool,
 			OrderID:        x.ID,
 		}
 	})
