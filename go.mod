@@ -3,7 +3,7 @@ module github.com/thangchung/go-coffeeshop
 go 1.25
 
 require (
-	github.com/golang-jwt/jwt/v4 v4.1.0
+	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/golang-migrate/migrate/v4 v4.15.2
 	github.com/golang/glog v1.2.5
 	github.com/google/uuid v1.6.0

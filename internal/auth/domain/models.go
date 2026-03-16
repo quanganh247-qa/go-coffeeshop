@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	auth "github.com/thangchung/go-coffeeshop/internal/pkg/auth"
 	shared "github.com/thangchung/go-coffeeshop/internal/pkg/shared_kernel"
 )
 
@@ -39,3 +40,6 @@ type RefreshToken struct {
 	Revoked   bool
 	CreatedAt time.Time
 }
+
+type CustomClaims = auth.CustomClaims
+

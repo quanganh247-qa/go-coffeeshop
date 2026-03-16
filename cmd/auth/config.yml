@@ -19,3 +19,6 @@ logger:
 
 jwt:
   secret_key: '12345678990076876783453442'
+  audience: 'auth-service'
+  issuer: 'auth-service'
+  

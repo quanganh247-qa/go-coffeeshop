@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/sirupsen/logrus"
 	"github.com/thangchung/go-coffeeshop/cmd/proxy/config"
@@ -104,7 +105,9 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	gw, err := newGateway(ctx, cfg, nil)
+	gw, err := newGateway(ctx, cfg, []gwruntime.ServeMuxOption{
+		gwruntime.WithIncomingHeaderMatcher(customIncomingHeaderMatcher),
+	})
 	if err != nil {
 		slog.Error("failed to create a new gateway", err)
 	}
@@ -129,5 +132,16 @@ func main() {
 
 	if err := s.ListenAndServe(); errors.Is(err, http.ErrServerClosed) {
 		slog.Error("failed to listen and serve", err)
+	}
+}
+
+func customIncomingHeaderMatcher(key string) (string, bool) {
+
+	lowerKey := strings.ToLower(key)
+	switch lowerKey {
+	case "x-user-id", "x-request-id", "x-correlation-id", "authorization":
+		return key, true
+	default:
+		return runtime.DefaultHeaderMatcher(key)
 	}
 }

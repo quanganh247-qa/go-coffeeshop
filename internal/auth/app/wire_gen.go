@@ -16,6 +16,7 @@ import (
 	"github.com/thangchung/go-coffeeshop/internal/auth/infras/repo"
 	"github.com/thangchung/go-coffeeshop/internal/auth/infras/token"
 	"github.com/thangchung/go-coffeeshop/internal/auth/usecases/users"
+	"github.com/thangchung/go-coffeeshop/internal/pkg/auth"
 	"github.com/thangchung/go-coffeeshop/pkg/postgres"
 	"github.com/thangchung/go-coffeeshop/pkg/rabbitmq"
 	"github.com/thangchung/go-coffeeshop/pkg/rabbitmq/consumer"
@@ -54,7 +55,8 @@ func InitApp(cfg *config.Config, dbConnStr postgres.DBConnString, rabbitMQConnSt
 	tokenGenerator := tokenGeneratorFunc(cfg)
 	useCase := usecases.NewUserService(userRepository, refreshTokenRepository, passwordHasher, tokenGenerator)
 	authServiceServer := router.NewAuthGRPCService(grpcServer, cfg, useCase)
-	app := New(cfg, dbEngine, connection, eventPublisher, eventConsumer, useCase, authServiceServer)
+	interceptor := authInterceptorFunc(tokenGenerator)
+	app := New(cfg, dbEngine, connection, eventPublisher, eventConsumer, useCase, authServiceServer, interceptor)
 	return app, func() {
 		cleanup2()
 		cleanup()
@@ -88,5 +90,15 @@ func hasherFunc() domain.PasswordHasher {
 }
 
 func tokenGeneratorFunc(cfg *config.Config) domain.TokenGenerator {
-	return token.NewJWTTokenGenerator(cfg.JWT.SecretKey)
+	return token.NewJWTTokenGenerator(cfg.JWT.SecretKey, cfg.JWT.Audience, cfg.JWT.Issuer)
+}
+
+func authInterceptorFunc(tokenGenerator domain.TokenGenerator) auth.Interceptor {
+	publicMethods := []string{
+		"/gen.AuthService/Login",
+		"/gen.AuthService/Register",
+		"/gen.AuthService/VerifyToken",
+		"/gen.AuthService/RefreshToken",
+	}
+	return auth.NewInterceptor(tokenGenerator, publicMethods)
 }

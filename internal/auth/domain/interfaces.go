@@ -30,4 +30,5 @@ type TokenGenerator interface {
 	GenerateAccessToken(user *User) (string, error)
 	GenerateRefreshToken(user *User) (string, error)
 	VerifyToken(token string) (bool, error)
+	VerifyAndParseClaims(token string) (*CustomClaims, error)
 }

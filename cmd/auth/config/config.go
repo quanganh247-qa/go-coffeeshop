@@ -30,6 +30,8 @@ type (
 
 	JWT struct {
 		SecretKey string `env-required:"true" yaml:"secret_key" env:"JWT_SECRET_KEY"`
+		Audience  string `env-required:"true" yaml:"audience" env:"JWT_AUDIENCE"`
+		Issuer    string `env-required:"true" yaml:"issuer" env:"JWT_ISSUER"`
 	}
 )
 
