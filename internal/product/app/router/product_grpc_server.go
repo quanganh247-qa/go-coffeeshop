@@ -25,15 +25,15 @@ func NewProductGRPCServer(
 	grpcServer *grpc.Server,
 	uc products.UseCase,
 ) gen.ProductServiceServer {
-	svc := productGRPCServer{
+	svc := &productGRPCServer{
 		uc: uc,
 	}
 
-	gen.RegisterProductServiceServer(grpcServer, &svc)
+	gen.RegisterProductServiceServer(grpcServer, svc)
 
 	reflection.Register(grpcServer)
 
-	return &svc
+	return svc
 }
 
 func (g *productGRPCServer) GetItemTypes(
@@ -42,7 +42,7 @@ func (g *productGRPCServer) GetItemTypes(
 ) (*gen.GetItemTypesResponse, error) {
 	slog.Info("gRPC client", "http_method", "GET", "http_name", "GetItemTypes")
 
-	res := gen.GetItemTypesResponse{}
+	res := &gen.GetItemTypesResponse{}
 
 	results, err := g.uc.GetItemTypes(ctx)
 	if err != nil {
@@ -51,14 +51,16 @@ func (g *productGRPCServer) GetItemTypes(
 
 	for _, item := range results {
 		res.ItemTypes = append(res.ItemTypes, &gen.ItemTypeDto{
-			Name:  item.Name,
-			Type:  int32(item.Type),
-			Price: item.Price,
-			Image: item.Image,
+			Name:      item.Name,
+			Type:      int32(item.Type),
+			Price:     item.Price,
+			Image:     item.Image,
+			CreatedAt: item.CreatedAt,
+			UpdatedAt: item.UpdatedAt,
 		})
 	}
 
-	return &res, nil
+	return res, nil
 }
 
 func (g *productGRPCServer) GetItemsByType(
@@ -67,7 +69,7 @@ func (g *productGRPCServer) GetItemsByType(
 ) (*gen.GetItemsByTypeResponse, error) {
 	slog.Info("gRPC client", "http_method", "GET", "http_name", "GetItemsByType", "item_types", request.ItemTypes)
 
-	res := gen.GetItemsByTypeResponse{}
+	res := &gen.GetItemsByTypeResponse{}
 
 	results, err := g.uc.GetItemsByType(ctx, request.ItemTypes)
 	if err != nil {
@@ -81,28 +83,38 @@ func (g *productGRPCServer) GetItemsByType(
 		})
 	}
 
-	return &res, nil
+	return res, nil
 }
 
 func (g *productGRPCServer) GetItemDetail(ctx context.Context, request *gen.GetItemDetailRequest) (*gen.GetItemDetailResponse, error) {
 	slog.Info("gRPC client", "http_method", "GET", "http_name", "GetItemDetail", "id", request.Id)
 
-	res := gen.GetItemDetailResponse{}
-
-	result, err := g.uc.GetItemDetails(ctx, request.Id)
+	result, err := g.uc.GetItemDetailByID(ctx, request.Id)
 	if err != nil {
 		return nil, errors.Wrap(err, "productGRPCServer-GetItemDetail")
 	}
 
-	res.Item = &gen.ItemTypeDto{
-		Name:      result.Name,
-		Type:      int32(result.Type),
-		Price:     result.Price,
-		CreatedAt: result.CreatedAt,
-		UpdatedAt: result.UpdatedAt,
-		// Image: result.Image,
+	return &gen.GetItemDetailResponse{
+		Item: &gen.ItemTypeDto{
+			Name:      result.Name,
+			Type:      int32(result.Type),
+			Price:     result.Price,
+			Image:     result.Image,
+			CreatedAt: result.CreatedAt,
+			UpdatedAt: result.UpdatedAt,
+		},
+	}, nil
+}
 
+func (g *productGRPCServer) CreateProduct(ctx context.Context, request *gen.CreateProductRequest) (*gen.CreateProductResponse, error) {
+	slog.Info("gRPC client", "http_method", "POST", "http_name", "CreateProduct", "name", request.Name)
+
+	id, err := g.uc.CreateProduct(ctx, request.Name, request.Type, request.Price, request.Image)
+	if err != nil {
+		return nil, errors.Wrap(err, "productGRPCServer-CreateProduct")
 	}
 
-	return &res, nil
+	return &gen.CreateProductResponse{
+		Id: id,
+	}, nil
 }

@@ -12,12 +12,39 @@ import (
 	"github.com/lib/pq"
 )
 
-const getProductByID = `-- name: GetProductByID :one
-SELECT id, name, type, price, stock, image, created_at, updated_at FROM product.products WHERE id = ($1::uuid)
+const createProduct = `-- name: CreateProduct :one
+INSERT INTO product.products (name, type, price, stock, image)
+VALUES ($1, $2, $3, $4, $5)
+RETURNING id
 `
 
-func (q *Queries) GetProductByID(ctx context.Context, dollar_1 uuid.UUID) (ProductProduct, error) {
-	row := q.db.QueryRowContext(ctx, getProductByID, dollar_1)
+type CreateProductParams struct {
+	Name  string  `json:"name"`
+	Type  int32   `json:"type"`
+	Price float64 `json:"price"`
+	Stock int32   `json:"stock"`
+	Image string  `json:"image"`
+}
+
+func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (uuid.UUID, error) {
+	row := q.db.QueryRowContext(ctx, createProduct,
+		arg.Name,
+		arg.Type,
+		arg.Price,
+		arg.Stock,
+		arg.Image,
+	)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
+const getProductByID = `-- name: GetProductByID :one
+SELECT id, name, type, price, stock, image, created_at, updated_at FROM product.products WHERE id = $1
+`
+
+func (q *Queries) GetProductByID(ctx context.Context, id uuid.UUID) (ProductProduct, error) {
+	row := q.db.QueryRowContext(ctx, getProductByID, id)
 	var i ProductProduct
 	err := row.Scan(
 		&i.ID,

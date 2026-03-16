@@ -37,10 +37,33 @@ service ProductService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get item detail"
-      description: "Get item detail by id."
+      description: "Get item detail by ID."
       tags: "Items"
     };
   }
+
+  rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse) {
+    option (google.api.http) = {
+      post: "/v1/api/products"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create a new product"
+      description: "Add a new product to the catalog."
+      tags: "Items"
+    };
+  }
+}
+
+message CreateProductRequest {
+  string name = 1;
+  int32 type = 2;
+  double price = 3;
+  string image = 4;
+}
+
+message CreateProductResponse {
+  string id = 1;
 }
 
 message GetItemDetailRequest {
@@ -69,6 +92,7 @@ message ItemDto {
 }
 
 message ItemTypeDto {
+  string id = 7;
   string name = 1;
   int32 type = 2;
   double price = 3;

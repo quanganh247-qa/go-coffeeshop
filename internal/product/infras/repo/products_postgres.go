@@ -34,10 +34,13 @@ func (p *productPostgresRepo) GetAll(ctx context.Context) ([]*domain.ItemTypeDto
 
 	return lo.Map(products, func(x postgresql.ProductProduct, _ int) *domain.ItemTypeDto {
 		return &domain.ItemTypeDto{
-			Name:  x.Name,
-			Type:  int(x.Type),
-			Price: x.Price,
-			Image: x.Image,
+			ID:        x.ID.String(),
+			Name:      x.Name,
+			Type:      int(x.Type),
+			Price:     x.Price,
+			Image:     x.Image,
+			CreatedAt: x.CreatedAt.Time.String(),
+			UpdatedAt: x.UpdatedAt.Time.String(),
 		}
 	}), nil
 }
@@ -58,27 +61,43 @@ func (p *productPostgresRepo) GetByTypes(ctx context.Context, itemTypes []string
 	}), nil
 }
 
-func (p *productPostgresRepo) GetProductByID(ctx context.Context, id string) (*domain.ItemDto, error) {
+func (p *productPostgresRepo) GetProductByID(ctx context.Context, id string) (*domain.ItemTypeDto, error) {
 	querier := postgresql.New(p.pg.GetDB())
 
-	idUUID, err := uuid.Parse(id)
+	uid, err := uuid.Parse(id)
 	if err != nil {
 		return nil, errors.Wrap(err, "uuid.Parse")
 	}
 
-	product, err := querier.GetProductByID(ctx, idUUID)
+	product, err := querier.GetProductByID(ctx, uid)
 	if err != nil {
 		return nil, errors.Wrap(err, "querier.GetProductByID")
 	}
 
-	createdAt := product.CreatedAt.Time.Format("2006-01-02 15:04:05")
-	updatedAt := product.UpdatedAt.Time.Format("2006-01-02 15:04:05")
-
-	return &domain.ItemDto{
-		Price:     product.Price,
-		Type:      int(product.Type),
+	return &domain.ItemTypeDto{
+		ID:        product.ID.String(),
 		Name:      product.Name,
-		CreatedAt: createdAt,
-		UpdatedAt: updatedAt,
+		Type:      int(product.Type),
+		Price:     product.Price,
+		Image:     product.Image,
+		CreatedAt: product.CreatedAt.Time.String(),
+		UpdatedAt: product.UpdatedAt.Time.String(),
 	}, nil
+}
+
+func (p *productPostgresRepo) Create(ctx context.Context, name string, itemType int32, price float64, image string) (string, error) {
+	querier := postgresql.New(p.pg.GetDB())
+
+	id, err := querier.CreateProduct(ctx, postgresql.CreateProductParams{
+		Name:  name,
+		Type:  itemType,
+		Price: price,
+		Image: image,
+		Stock: 0,
+	})
+	if err != nil {
+		return "", errors.Wrap(err, "querier.CreateProduct")
+	}
+
+	return id.String(), nil
 }

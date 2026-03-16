@@ -43,11 +43,20 @@ func (s *service) GetItemsByType(ctx context.Context, itemTypes string) ([]*doma
 	return results, nil
 }
 
-func (s *service) GetItemDetails(ctx context.Context, id string) (*domain.ItemDto, error) {
+func (s *service) GetItemDetailByID(ctx context.Context, id string) (*domain.ItemTypeDto, error) {
 	result, err := s.repo.GetProductByID(ctx, id)
 	if err != nil {
-		return nil, errors.Wrap(err, "service.GetItemDetails")
+		return nil, errors.Wrap(err, "service.GetItemDetailByID")
 	}
 
 	return result, nil
+}
+
+func (s *service) CreateProduct(ctx context.Context, name string, itemType int32, price float64, image string) (string, error) {
+	id, err := s.repo.Create(ctx, name, itemType, price, image)
+	if err != nil {
+		return "", errors.Wrap(err, "service.CreateProduct")
+	}
+
+	return id, nil
 }

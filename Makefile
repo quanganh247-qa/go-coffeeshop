@@ -3,7 +3,12 @@ export
 
 all: build test
 
-run: run-product run-counter run-barista run-kitchen run-proxy run-web
+run: run-auth run-product run-counter run-barista run-kitchen run-proxy run-web 
+
+run-auth:
+	cd cmd/auth && go mod tidy && go mod download && \
+	CGO_ENABLED=0 go run -tags migrate github.com/thangchung/go-coffeeshop/cmd/auth
+.PHONY: run-auth
 
 run-product:
 	cd cmd/product && go mod tidy && go mod download && \
@@ -62,6 +67,7 @@ docker-compose-build:
 .PHONY: docker-compose-build
 
 wire:
+	cd internal/auth/app && wire && cd - && \
 	cd internal/barista/app && wire && cd - && \
 	cd internal/counter/app && wire && cd - && \
 	cd internal/kitchen/app && wire && cd - && \

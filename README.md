@@ -122,3 +122,20 @@ The details of how to run it can be find at [deployment with Nomad, Consult Conn
 - [go-build-template](https://github.com/thockin/go-build-template)
 - [go-clean-template](https://github.com/evrone/go-clean-template)
 - [emsifa/tailwind-pos](https://github.com/emsifa/tailwind-pos)
+
+<!-- Developed an event-driven microservices coffee shop system in Go
+using Clean Architecture and Domain-Driven Design.
+
+Implemented distributed transactions using the Saga choreography
+pattern with RabbitMQ.
+
+Designed gRPC APIs and REST gateways using gRPC-Gateway.
+
+Built reliable message processing with retry policies,
+dead-letter queues, and idempotent event consumers.
+
+Implemented distributed tracing with OpenTelemetry and Jaeger
+for cross-service request visibility.
+
+Deployed services using Docker and Kubernetes with Helm-based
+deployment automation. -->

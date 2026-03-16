@@ -1,16 +1,16 @@
 package domain
 
 type ItemTypeDto struct {
-	Name  string  `json:"name"`
-	Type  int     `json:"type"`
-	Price float64 `json:"price"`
-	Image string  `json:"image"`
+	ID        string  `json:"id"`
+	Name      string  `json:"name"`
+	Type      int     `json:"type"`
+	Price     float64 `json:"price"`
+	Image     string  `json:"image"`
+	CreatedAt string  `json:"created_at"`
+	UpdatedAt string  `json:"updated_at"`
 }
 
 type ItemDto struct {
-	Name      string  `json:"name"`
-	Price     float64 `json:"price"`
-	Type      int     `json:"type"`
-	CreatedAt string  `json:"created_at"`
-	UpdatedAt string  `json:"updated_at"`
+	Price float64 `json:"price"`
+	Type  int     `json:"type"`
 }

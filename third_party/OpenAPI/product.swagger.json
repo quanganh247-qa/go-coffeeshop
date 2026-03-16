@@ -75,7 +75,7 @@
     "/v1/api/items/{id}": {
       "get": {
         "summary": "Get item detail",
-        "description": "Get item detail by id.",
+        "description": "Get item detail by name.",
         "operationId": "ProductService_GetItemDetail",
         "responses": {
           "200": {
@@ -103,9 +103,70 @@
           "Items"
         ]
       }
+    },
+    "/v1/api/products": {
+      "post": {
+        "summary": "Create a new product",
+        "description": "Add a new product to the catalog.",
+        "operationId": "ProductService_CreateProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/productapiCreateProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/productapiCreateProductRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Items"
+        ]
+      }
     }
   },
   "definitions": {
+    "productapiCreateProductRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "price": {
+          "type": "number",
+          "format": "double"
+        },
+        "image": {
+          "type": "string"
+        }
+      }
+    },
+    "productapiCreateProductResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
     "productapiGetItemDetailResponse": {
       "type": "object",
       "properties": {
