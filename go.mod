@@ -3,6 +3,7 @@ module github.com/thangchung/go-coffeeshop
 go 1.25
 
 require (
+	github.com/golang-jwt/jwt/v4 v4.1.0
 	github.com/golang-migrate/migrate/v4 v4.15.2
 	github.com/golang/glog v1.2.5
 	github.com/google/uuid v1.6.0
@@ -18,6 +19,7 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 	github.com/stretchr/testify v1.8.1
 	go.uber.org/automaxprocs v1.5.1
+	golang.org/x/crypto v0.46.0
 	golang.org/x/exp v0.0.0-20221026153819-32f3d567a233
 	google.golang.org/genproto v0.0.0-20221014213838-99cd37c6964a
 	google.golang.org/grpc v1.79.2
@@ -38,7 +40,6 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
-	golang.org/x/crypto v0.46.0 // indirect
 	golang.org/x/net v0.48.0 // indirect
 	golang.org/x/sys v0.39.0 // indirect
 	golang.org/x/text v0.32.0 // indirect

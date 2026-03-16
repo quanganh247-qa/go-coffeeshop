@@ -445,6 +445,7 @@ func (x *ItemDto) GetType() int32 {
 
 type ItemTypeDto struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,7,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Type          int32                  `protobuf:"varint,2,opt,name=type,proto3" json:"type,omitempty"`
 	Price         float64                `protobuf:"fixed64,3,opt,name=price,proto3" json:"price,omitempty"`
@@ -483,6 +484,13 @@ func (x *ItemTypeDto) ProtoReflect() protoreflect.Message {
 // Deprecated: Use ItemTypeDto.ProtoReflect.Descriptor instead.
 func (*ItemTypeDto) Descriptor() ([]byte, []int) {
 	return file_product_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *ItemTypeDto) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
 }
 
 func (x *ItemTypeDto) GetName() string {
@@ -554,8 +562,9 @@ const file_product_proto_rawDesc = "" +
 	"\x05items\x18\x01 \x03(\v2'.go.coffeeshop.proto.productapi.ItemDtoR\x05items\"3\n" +
 	"\aItemDto\x12\x14\n" +
 	"\x05price\x18\x01 \x01(\x01R\x05price\x12\x12\n" +
-	"\x04type\x18\x02 \x01(\x05R\x04type\"\x9f\x01\n" +
-	"\vItemTypeDto\x12\x12\n" +
+	"\x04type\x18\x02 \x01(\x05R\x04type\"\xaf\x01\n" +
+	"\vItemTypeDto\x12\x0e\n" +
+	"\x02id\x18\a \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
 	"\x04type\x18\x02 \x01(\x05R\x04type\x12\x14\n" +
 	"\x05price\x18\x03 \x01(\x01R\x05price\x12\x14\n" +
@@ -563,14 +572,14 @@ const file_product_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x05 \x01(\tR\tcreatedAt\x12\x1d\n" +
 	"\n" +
-	"updated_at\x18\x06 \x01(\tR\tupdatedAt2\x8e\a\n" +
+	"updated_at\x18\x06 \x01(\tR\tupdatedAt2\x8c\a\n" +
 	"\x0eProductService\x12\xd8\x01\n" +
 	"\fGetItemTypes\x123.go.coffeeshop.proto.productapi.GetItemTypesRequest\x1a4.go.coffeeshop.proto.productapi.GetItemTypesResponse\"]\x92A@\n" +
 	"\tItemTypes\x12\x0fList item types\x1a\"List all item types on the server.\x82\xd3\xe4\x93\x02\x14\x12\x12/v1/api/item-types\x12\xf1\x01\n" +
 	"\x0eGetItemsByType\x125.go.coffeeshop.proto.productapi.GetItemsByTypeRequest\x1a6.go.coffeeshop.proto.productapi.GetItemsByTypeResponse\"p\x92AB\n" +
-	"\tItemTypes\x12\x12List items by type\x1a!List items by type on the server.\x82\xd3\xe4\x93\x02%\x12#/v1/api/items-by-types/{item_types}\x12\xcd\x01\n" +
-	"\rGetItemDetail\x124.go.coffeeshop.proto.productapi.GetItemDetailRequest\x1a5.go.coffeeshop.proto.productapi.GetItemDetailResponse\"O\x92A2\n" +
-	"\x05Items\x12\x0fGet item detail\x1a\x18Get item detail by name.\x82\xd3\xe4\x93\x02\x14\x12\x12/v1/api/items/{id}\x12\xdc\x01\n" +
+	"\tItemTypes\x12\x12List items by type\x1a!List items by type on the server.\x82\xd3\xe4\x93\x02%\x12#/v1/api/items-by-types/{item_types}\x12\xcb\x01\n" +
+	"\rGetItemDetail\x124.go.coffeeshop.proto.productapi.GetItemDetailRequest\x1a5.go.coffeeshop.proto.productapi.GetItemDetailResponse\"M\x92A0\n" +
+	"\x05Items\x12\x0fGet item detail\x1a\x16Get item detail by ID.\x82\xd3\xe4\x93\x02\x14\x12\x12/v1/api/items/{id}\x12\xdc\x01\n" +
 	"\rCreateProduct\x124.go.coffeeshop.proto.productapi.CreateProductRequest\x1a5.go.coffeeshop.proto.productapi.CreateProductResponse\"^\x92A@\n" +
 	"\x05Items\x12\x14Create a new product\x1a!Add a new product to the catalog.\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/v1/api/productsB/Z-github.com/thangchung/go-coffeeshop/proto/genb\x06proto3"
 

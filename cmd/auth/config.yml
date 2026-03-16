@@ -16,3 +16,6 @@ rabbitmq:
 logger:
   log_level: 'debug'
   rollbar_env: 'auth-service'
+
+jwt:
+  secret_key: '12345678990076876783453442'

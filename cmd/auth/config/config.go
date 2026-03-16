@@ -16,6 +16,7 @@ type (
 		configs.Log  `yaml:"logger"`
 		PG           `yaml:"postgres"`
 		RabbitMQ     `yaml:"rabbitmq"`
+		JWT          `yaml:"jwt"`
 	}
 
 	PG struct {
@@ -25,6 +26,10 @@ type (
 
 	RabbitMQ struct {
 		URL string `env-required:"true" yaml:"url" env:"RABBITMQ_URL"`
+	}
+
+	JWT struct {
+		SecretKey string `env-required:"true" yaml:"secret_key" env:"JWT_SECRET_KEY"`
 	}
 )
 

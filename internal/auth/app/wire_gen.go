@@ -7,8 +7,15 @@
 package app
 
 import (
+	"database/sql"
 	"github.com/rabbitmq/amqp091-go"
 	"github.com/thangchung/go-coffeeshop/cmd/auth/config"
+	"github.com/thangchung/go-coffeeshop/internal/auth/app/router"
+	"github.com/thangchung/go-coffeeshop/internal/auth/domain"
+	"github.com/thangchung/go-coffeeshop/internal/auth/infras/hasher"
+	"github.com/thangchung/go-coffeeshop/internal/auth/infras/repo"
+	"github.com/thangchung/go-coffeeshop/internal/auth/infras/token"
+	"github.com/thangchung/go-coffeeshop/internal/auth/usecases/users"
 	"github.com/thangchung/go-coffeeshop/pkg/postgres"
 	"github.com/thangchung/go-coffeeshop/pkg/rabbitmq"
 	"github.com/thangchung/go-coffeeshop/pkg/rabbitmq/consumer"
@@ -40,7 +47,14 @@ func InitApp(cfg *config.Config, dbConnStr postgres.DBConnString, rabbitMQConnSt
 		cleanup()
 		return nil, nil, err
 	}
-	app := New(cfg, dbEngine, connection, eventPublisher, eventConsumer)
+	db := sqlDBFunc(dbEngine)
+	userRepository := repo.NewUserRepository(db)
+	refreshTokenRepository := repo.NewRefreshTokenRepository(db)
+	passwordHasher := hasherFunc()
+	tokenGenerator := tokenGeneratorFunc(cfg)
+	useCase := usecases.NewUserService(userRepository, refreshTokenRepository, passwordHasher, tokenGenerator)
+	authServiceServer := router.NewAuthGRPCService(grpcServer, cfg, useCase)
+	app := New(cfg, dbEngine, connection, eventPublisher, eventConsumer, useCase, authServiceServer)
 	return app, func() {
 		cleanup2()
 		cleanup()
@@ -57,10 +71,22 @@ func dbEngineFunc(url postgres.DBConnString) (postgres.DBEngine, func(), error) 
 	return db, func() { db.Close() }, err
 }
 
+func sqlDBFunc(db postgres.DBEngine) *sql.DB {
+	return db.GetDB()
+}
+
 func rabbitMQFunc(url rabbitmq.RabbitMQConnStr) (*amqp091.Connection, func(), error) {
 	conn, err := rabbitmq.NewRabbitMQConn(url)
 	if err != nil {
 		return nil, nil, err
 	}
 	return conn, func() { conn.Close() }, err
+}
+
+func hasherFunc() domain.PasswordHasher {
+	return hasher.NewBcryptHasher(0)
+}
+
+func tokenGeneratorFunc(cfg *config.Config) domain.TokenGenerator {
+	return token.NewJWTTokenGenerator(cfg.JWT.SecretKey)
 }

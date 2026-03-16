@@ -22,6 +22,8 @@ type (
 		ProductPort int    `env-required:"true" yaml:"product_port" env:"GRPC_PRODUCT_PORT"`
 		CounterHost string `env-required:"true" yaml:"counter_host" env:"GRPC_COUNTER_HOST"`
 		CounterPort int    `env-required:"true" yaml:"counter_port" env:"GRPC_COUNTER_PORT"`
+		AuthHost    string `env-required:"true" yaml:"auth_host" env:"GRPC_AUTH_HOST"`
+		AuthPort    int    `env-required:"true" yaml:"auth_port" env:"GRPC_AUTH_PORT"`
 	}
 )
 

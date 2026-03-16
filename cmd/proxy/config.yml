@@ -11,6 +11,8 @@ grpc:
   product_port: 8001
   counter_host: '0.0.0.0'
   counter_port: 8002
+  auth_host: '0.0.0.0'
+  auth_port: 8005
 
 logger:
   log_level: 'debug'

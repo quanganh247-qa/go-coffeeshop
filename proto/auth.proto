@@ -1,12 +1,106 @@
 syntax = "proto3";
 
-package auth;
+package go.coffeeshop.proto.authapi;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "common.proto";
+
+option go_package = "github.com/thangchung/go-coffeeshop/proto/gen";
 
 service AuthService {
-  rpc Register(RegisterRequest) returns (RegisterResponse);
-  rpc Login(LoginRequest) returns (LoginResponse);
-  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse);
-  rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse);
+  rpc Register(RegisterRequest) returns (RegisterResponse) {
+    option (google.api.http) = {
+      post: "/v1/api/auth/register"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Register a new user"
+      description: "Create a new user account."
+      tags: "Auth"
+    };
+  }
+
+  rpc Login(LoginRequest) returns (LoginResponse) {
+    option (google.api.http) = {
+      post: "/v1/api/auth/login"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "User login"
+      description: "Authenticate user and return tokens."
+      tags: "Auth"
+    };
+  }
+
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {
+    option (google.api.http) = {
+      post: "/v1/api/auth/refresh-token"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Refresh access token"
+      description: "Get a new access token using a refresh token."
+      tags: "Auth"
+    };
+  }
+
+  rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse) {
+    option (google.api.http) = {
+      post: "/v1/api/auth/verify-token"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Verify access token"
+      description: "Check if an access token is valid."
+      tags: "Auth"
+    };
+  }
+
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
+    option (google.api.http) = {
+      get: "/v1/api/auth/users"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List users"
+      description: "Return a list of all users."
+      tags: "Auth"
+    };
+  }
+
+  rpc GetUserDetail(GetUserDetailRequest) returns (GetUserDetailResponse) {
+    option (google.api.http) = {
+      get: "/v1/api/auth/users/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get user detail"
+      description: "Return details of a specific user."
+      tags: "Auth"
+    };
+  }
+}
+
+message ListUsersRequest {}
+
+message ListUsersResponse {
+  repeated UserDto users = 1;
+}
+
+message GetUserDetailRequest {
+  string id = 1;
+}
+
+message GetUserDetailResponse {
+  UserDto user = 1;
+}
+
+message UserDto {
+  string id = 1;
+  string email = 2;
+  bool is_active = 3;
+  bool email_verified = 4;
+  string created_at = 5;
+  string updated_at = 6;
 }
 
 message RegisterRequest {

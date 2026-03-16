@@ -75,7 +75,7 @@
     "/v1/api/items/{id}": {
       "get": {
         "summary": "Get item detail",
-        "description": "Get item detail by name.",
+        "description": "Get item detail by ID.",
         "operationId": "ProductService_GetItemDetail",
         "responses": {
           "200": {
@@ -215,6 +215,9 @@
     "productapiItemTypeDto": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
